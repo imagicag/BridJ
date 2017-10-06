@@ -32,3 +32,5 @@ dalvik
 .classpath
 .project
 .settings
+
+imagic_mvn_settings.xml
