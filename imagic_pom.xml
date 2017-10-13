@@ -35,7 +35,7 @@
  	<parent>
 		<groupId>com.nativelibs4java</groupId>
 		<artifactId>nativelibs4java-parent</artifactId>
-		<version>1.10-SNAPSHOT</version>
+		<version>1.9</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -172,8 +172,9 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
+				<artifactId>maven-shade-plugin</artifactId>      
 				<configuration>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
 					<relocations>
 						<relocation>
 							<pattern>org.objectweb.asm</pattern>

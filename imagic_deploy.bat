@@ -8,12 +8,21 @@ SET MVN_POM_FILE=%MY_DIR%%MVN_POM_FILE_NAME%
 
 SET MVN_PROFILE=imagicIntern
 
+IF [%1]==[] (
+    ECHO ===========================================================================
+    ECHO = ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR 
+    ECHO = At least one parameter ie. maven target must be specified.
+    ECHO = Usually this will be 'deploy' (without the ' of course^!^)
+    ECHO ===========================================================================
+    GOTO END
+)
+
 
 IF NOT EXIST "%MVN_POM_FILE%" (
     ECHO ===========================================================================
     ECHO = Could not find imagic pom! Searched:
     ECHO = %MVN_POM_FILE%
-    ECHO = Maybe you are on the wrong Git branch?
+    ECHO = Maybe you are on the wrong Git branch^?
     ECHO = Going to abort now...
     ECHO ===========================================================================
     GOTO ERROR
@@ -52,7 +61,7 @@ IF NOT EXIST "%MVN_SETTINGS_FILE%" (
     ECHO ^</settings^>
     ECHO. ) > %MVN_SETTINGS_FILE%
     SLEEP 2
-    notepad %MVN_SETTINGS_FILE%
+    START /WAIT notepad %MVN_SETTINGS_FILE%
     IF NOT ERRORLEVEL 0 GOTO ERROR
 
 
@@ -61,19 +70,24 @@ IF NOT DEFINED JAVA_HOME (
     ECHO ===========================================================================
     ECHO = The env variable JAVA_HOME is not defined but maybe needed by Maven!     
     ECHO = If this script does throw such related errors you know what to do.       
+    ECHO = Example WITHOUT setting the systemwide JAVA_HOME (what is bad anyway^!^)
+    ECHO = SET JAVA_HOME=Path\to\java.exe& ^imagic_deploy.bat deploy
     ECHO ===========================================================================
 )
 
 
 PUSHD %MY_DIR%
+SET MVN_BASE_CMD_OPTIONS=
+REM SET MVN_BASE_CMD_OPTIONS=-DcreateDependencyReducedPom=false
 ECHO =========================================================================================================================================
+ECHO = Got the following options/targets to be used for exeuction
+ECHO = %*
 ECHO = Going to execute maven with the following command:
-ECHO = mvn -f %MVN_POM_FILE% --settings %MVN_SETTINGS_FILE% -P %MVN_PROFILE% %*
+ECHO = mvn -f %MVN_POM_FILE% --settings %MVN_SETTINGS_FILE% -P %MVN_PROFILE% %MVN_BASE_CMD_OPTIONS% %*
 ECHO =========================================================================================================================================
 
-REM SET JAVA_HOME=C:\Program Files\Java\jdk1.8.0_144& mvn -f imagic_pom.xml --settings imagic_mvn_settings.xml deploy -P imagicIntern
 
-mvn -f %MVN_POM_FILE% --settings %MVN_SETTINGS_FILE% -P %MVN_PROFILE% %*
+mvn -f %MVN_POM_FILE% --settings %MVN_SETTINGS_FILE% -P %MVN_PROFILE% %MVN_BASE_CMD_OPTIONS% %*
 IF NOT ERRORLEVEL 1 GOTO END
 
 :ERROR
